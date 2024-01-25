@@ -25,11 +25,11 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <graph_ros1/collision_checkers/parallel_moveit_collision_checker.h>
+#include <graph_ros2/collision_checkers/parallel_moveit_collision_checker.h>
 
 namespace graph
 {
-namespace ros1
+namespace ros2
 {
 
 ParallelMoveitCollisionChecker::ParallelMoveitCollisionChecker(const planning_scene::PlanningScenePtr &planning_scene,
@@ -153,7 +153,7 @@ bool ParallelMoveitCollisionChecker::checkAllQueues()
 
 void ParallelMoveitCollisionChecker::collisionThread(int thread_idx)
 {
-  robot_state::RobotStatePtr state=std::make_shared<robot_state::RobotState>(planning_scenes_.at(thread_idx)->getCurrentState());
+  moveit::core::RobotStatePtr state=std::make_shared<moveit::core::RobotState>(planning_scenes_.at(thread_idx)->getCurrentState());
   const std::vector<std::vector<double>>& queue=queues_.at(thread_idx);
   for (const std::vector<double>& configuration: queue)
   {
@@ -201,7 +201,7 @@ ParallelMoveitCollisionChecker::~ParallelMoveitCollisionChecker()
   CNR_DEBUG(logger_,"Collision threads closed");
 }
 
-bool ParallelMoveitCollisionChecker::asyncSetPlanningSceneMsg(const moveit_msgs::PlanningScene& msg, const int& idx)
+bool ParallelMoveitCollisionChecker::asyncSetPlanningSceneMsg(const moveit_msgs::msg::PlanningScene& msg, const int& idx)
 {
   bool res = true;
   for(int i=idx;i<(idx+GROUP_SIZE);i++)
@@ -232,7 +232,7 @@ bool ParallelMoveitCollisionChecker::asyncSetPlanningScene(const planning_scene:
   return true;
 }
 
-void ParallelMoveitCollisionChecker::setPlanningSceneMsg(const moveit_msgs::PlanningScene& msg)
+void ParallelMoveitCollisionChecker::setPlanningSceneMsg(const moveit_msgs::msg::PlanningScene& msg)
 {
   stop_check_=true;
 
@@ -266,7 +266,7 @@ void ParallelMoveitCollisionChecker::setPlanningSceneMsg(const moveit_msgs::Plan
   for (int idx=0;idx<n_groups;idx++)
   {
     if(!futures.at(idx).get())
-      ROS_ERROR_THROTTLE(1,"unable to upload scene");
+      CNR_ERROR_THROTTLE(logger_,1,"unable to upload scene");
   }
 }
 
@@ -404,5 +404,5 @@ CollisionCheckerPtr ParallelMoveitCollisionChecker::clone()
   planning_scene::PlanningScenePtr planning_scene = planning_scene::PlanningScene::clone(planning_scene_);
   return std::make_shared<ParallelMoveitCollisionChecker>(planning_scene,group_name_,logger_,threads_num_,min_distance_);
 }
-} //namespace ros1
+} //namespace ros2
 } //namespace graph

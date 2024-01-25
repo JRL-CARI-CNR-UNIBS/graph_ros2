@@ -27,7 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#include <graph_ros1/collision_checkers/moveit_collision_checker.h>
+#include <graph_ros2/collision_checkers/moveit_collision_checker.h>
 #include <thread>
 #include <future>
 #include <mutex>
@@ -37,7 +37,7 @@ namespace graph
 
 using namespace graph::core;
 
-namespace ros1
+namespace ros2
 {
 
 /**
@@ -121,7 +121,7 @@ protected:
    * @param idx Index of the first thread to update.
    * @return True if successful, false otherwise.
    */
-  bool asyncSetPlanningSceneMsg(const moveit_msgs::PlanningScene& msg, const int &idx);
+  bool asyncSetPlanningSceneMsg(const moveit_msgs::msg::PlanningScene& msg, const int &idx);
 
   /**
    * @brief Asynchronously clone and set the PlanningScene for a group of threads.
@@ -189,7 +189,7 @@ public:
    *
    * @param msg The PlanningScene message.
    */
-  virtual void setPlanningSceneMsg(const moveit_msgs::PlanningScene& msg) override;
+  virtual void setPlanningSceneMsg(const moveit_msgs::msg::PlanningScene& msg) override;
 
   /**
    * @brief Set the PlanningScene for the entire group of threads.
@@ -217,5 +217,5 @@ public:
 
 };
 
-} //namespace ros1
+} //namespace ros2
 } //namespace graph

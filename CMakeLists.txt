@@ -9,14 +9,52 @@ set(CMAKE_BUILD_TYPE Debug)
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+
 find_package(Eigen3 REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(graph_core REQUIRED)
-find_package(moveit_core)
-find_package(moveit_ros_planning)
-find_package(moveit_ros_planning_interface)
-find_package(moveit_visual_tools)
-find_package(rviz_visual_tools)
+find_package(moveit_core REQUIRED)
+find_package(moveit_msgs REQUIRED)
+find_package(moveit_ros_planning REQUIRED)
+find_package(moveit_ros_planning_interface REQUIRED)
+find_package(moveit_visual_tools REQUIRED)
+find_package(rviz_visual_tools REQUIRED)
+
+add_library(${PROJECT_NAME} SHARED
+  src/${PROJECT_NAME}/collision_checkers/parallel_moveit_collision_checker.cpp
+)
+ament_target_dependencies(${PROJECT_NAME} PUBLIC
+  rclcpp
+  Eigen3
+  graph_core
+  moveit_core
+  moveit_msgs
+  moveit_ros_planning
+  moveit_ros_planning_interface
+  moveit_visual_tools
+  rviz_visual_tools
+)
+# target_link_libraries(${PROJECT_NAME} PUBLIC
+#
+# )
+target_include_directories(${PROJECT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)
+
+ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
+ament_export_dependencies(rclcpp Eigen3 graph_core moveit_core moveit_msgs moveit_ros_planning moveit_ros_planning_interface moveit_visual_tools moveit_visual_tools rviz_visual_tools)
+
+install(TARGETS ${PROJECT_NAME}
+  EXPORT export_${PROJECT_NAME}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
+install(
+  DIRECTORY include/
+  DESTINATION include/${PROJECT_NAME}
+)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
