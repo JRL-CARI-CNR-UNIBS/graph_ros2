@@ -5,11 +5,18 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
+set(CMAKE_BUILD_TYPE Debug)
+
 # find dependencies
 find_package(ament_cmake REQUIRED)
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
+find_package(Eigen3 REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(graph_core REQUIRED)
+find_package(moveit_core)
+find_package(moveit_ros_planning)
+find_package(moveit_ros_planning_interface)
+find_package(moveit_visual_tools)
+find_package(rviz_visual_tools)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

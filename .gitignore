@@ -5,3 +5,6 @@ kdev4/
 *.orig*
 *.autosave*
 
+build/
+log/
+install/
